@@ -5,7 +5,7 @@ const Navbar = () => {
     const {user} = useAuth();
 
     return (
-        <nav className="bg-gray-800 p-4 flex justify-between items-center">
+        <nav className="bg-appbar-background p-4 flex justify-between items-center">
             <div className="text-xl font-bold">Materialize</div>
             <div className="flex space-x-4">
                 <Link to="/" className="hover:text-gray-300">
