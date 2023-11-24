@@ -3,8 +3,9 @@ import {AuthProvider} from './context/AuthContext';
 import Home from "./pages/Home.tsx";
 import About from "./pages/About.tsx";
 import Navbar from "./components/Navbar.tsx";
-import Login from "./pages/Login.tsx";
+import SignIn from "./pages/SignIn.tsx";
 import Profile from "./pages/Profile.tsx";
+import SignOut from "./pages/SignOut.tsx";
 
 
 const App = () => {
@@ -19,7 +20,8 @@ const App = () => {
                         </Route>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/about" element={<About/>}/>
-                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/signin" element={<SignIn/>}/>
+                        <Route path="/signout" element={<SignOut/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                     </Routes>
                 </div>
