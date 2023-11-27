@@ -1,11 +1,18 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 interface User {
+    user_id: string,
     username: string,
-    displayName: string,
+    display_name: string,
     avatar: string,
-    banner: string,
+    banner: string | null,
     banner_color: string,
+    tokens: {
+        access_token: string,
+        refresh_token: string
+    }
+    expiration: { auth: Date, refresh: Date }
 }
 
 interface AuthContextProps {
@@ -18,14 +25,32 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [user, setUser] = useState<any>(null);
+    const navigate = useNavigate();
 
+
+    useEffect(() => {
+        //See if any user data is in storage
+        const checkTokenStorage = async () => {
+            const userString = localStorage.getItem("user_info");
+            if (userString) {
+                try {
+                    setUser(JSON.parse(userString));
+                } catch (error) {
+                    console.error('Error parsing user from local storage:', error);
+                    return null;
+                }
+            }
+        }
+        if (user === null)
+            checkTokenStorage();
+    }, []);
     const login = () => {
         // Redirect logic to Discord OAuth URL
-        window.location.href = `https://discord.com/oauth2/authorize?prompt=consent&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth%2Fdiscord%2Fcallback&scope=identify%20email%20guilds&client_id=${process.env.REACT_APP_DISCORD_CLIENT_ID}`;
+        window.location.href = `https://discord.com/oauth2/authorize?prompt=consent&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth%2Fdiscord%2Fcallback&scope=identify%20email%20guilds&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
     };
 
     const logout = () => {
-        // Implement logout logic if needed
+        localStorage.removeItem("user_info");
         setUser(null);
     };
 
@@ -35,11 +60,11 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             if (location.pathname === '/auth/discord/callback') {
                 const searchParams = new URLSearchParams(location.search);
                 const code = searchParams.get('code');
-
+                navigate("/");
                 if (code) {
                     // Make a request to your backend to exchange the code for an access token
                     try {
-                        const response = await fetch('http://localhost:5000/api/discord', {
+                        const response = await fetch('http://localhost:5000/api/auth/signin', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -48,11 +73,9 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                         });
 
                         if (response.ok) {
-                            // Handle the response as needed
                             const data = await response.json();
-                            console.log('Token exchange successful:', data);
-
-                            // Set the user state using setUser()
+                            // Set the user object and save the data in local storage
+                            localStorage.setItem("user_info", JSON.stringify(data));
                             setUser(data);
                         } else {
                             console.error('Token exchange failed');
@@ -66,6 +89,40 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
         handleDiscordCallback();
     }, [location.search]);
+
+    useEffect(() => {
+        // If the auth token has expired, fetch a new one
+        console.log("checking token")
+        const checkTokenExpiration = async () => {
+            if (user && user.expiration.auth < Date.now()) {
+                if (user.expiration.refresh > Date.now()) {
+                    try {
+                        const response = await fetch('http://localhost:5000/api/auth/refresh', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({refresh_token: user.tokens.refresh_token}),
+                        });
+
+                        if (response.ok) {
+                            const refreshedUser = await response.json();
+                            setUser(refreshedUser);
+                        } else {
+                            logout();
+                        }
+                    } catch (error) {
+                        console.error('Error refreshing token:', error);
+                        logout();
+                    }
+                } else {
+                    logout();
+                }
+            }
+        };
+
+        checkTokenExpiration();
+    }, [location]);
 
     return <AuthContext.Provider value={{user, login, logout}}>{children}</AuthContext.Provider>;
 };

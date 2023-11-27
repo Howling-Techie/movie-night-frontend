@@ -3,13 +3,16 @@ import {AuthProvider} from './context/AuthContext';
 import Home from "./pages/Home.tsx";
 import About from "./pages/About.tsx";
 import Navbar from "./components/Navbar.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import Profile from "./pages/Profile.tsx";
+import SignOut from "./pages/SignOut.tsx";
 
 
 const App = () => {
     return (
         <Router>
             <AuthProvider>
-                <div className="bg-gray-900 text-white min-h-screen">
+                <div className="bg-background text-dark-text min-h-screen">
                     <Navbar/>
                     <Routes>
                         <Route path="/auth/discord/callback">
@@ -17,6 +20,9 @@ const App = () => {
                         </Route>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/about" element={<About/>}/>
+                        <Route path="/signin" element={<SignIn/>}/>
+                        <Route path="/signout" element={<SignOut/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
                     </Routes>
                 </div>
             </AuthProvider>
