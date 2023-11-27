@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import Profile from "./pages/Profile.tsx";
 import SignOut from "./pages/SignOut.tsx";
+import Movies from "./pages/Movies.tsx";
+import MoviePage from "./pages/Movie.tsx";
 
 
 const App = () => {
@@ -19,6 +21,8 @@ const App = () => {
                             {/* Callback logic will be handled in the AuthProvider */}
                         </Route>
                         <Route path="/" element={<Home/>}/>
+                        <Route path="/movies" element={<Movies/>}/>
+                        <Route path="/movies/:movie_id" element={<MoviePage/>}/>
                         <Route path="/about" element={<About/>}/>
                         <Route path="/signin" element={<SignIn/>}/>
                         <Route path="/signout" element={<SignOut/>}/>
