@@ -25,6 +25,7 @@ const makeRequest = async (config: AxiosRequestConfig) => {
     }
 };
 
+// SERVERS
 export const getServer = async (serverId: number, accessToken?: string) => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
@@ -62,3 +63,33 @@ export const getServerUsers = async (
         ...config,
     });
 };
+
+// MOVIES
+export const getMovies = async () => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/movies`,
+        ...config,
+    });
+};
+export const getMovie = async (movieId: number) => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/movies/${movieId}`,
+        ...config,
+    });
+};
+export const getMovieSubmissions = async (movieId: number) => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/movies/${movieId}/submissions`,
+        ...config,
+    });
+};
+
