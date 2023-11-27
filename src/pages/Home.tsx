@@ -8,7 +8,7 @@ const Home = () => {
             <div
                 className="w-full font-extrabold max-w-7xl justify-center grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div
-                    className="col-span-1 rounded-2xl bg-surface text-center h-80 flex-col flex justify-evenly pb-4">
+                    className="col-span-1 rounded-2xl  text-center h-80 flex-col flex justify-evenly pb-4 border shadow-2xl">
                     <h3 className="text-2xl font-bold pt-8">Submissions</h3>
                     <div className="font-normal grow flex-col justify-center flex">
                         <div className="my-2">TMDB integration</div>
@@ -17,7 +17,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div
-                    className="col-span-1 rounded-2xl bg-surface text-center h-80 flex-col flex justify-evenly pb-4">
+                    className="col-span-1 rounded-2xl text-center h-80 flex-col flex justify-evenly pb-4 border shadow-2xl">
                     <h3 className="text-2xl font-bold pt-8">Organisation</h3>
                     <div className="font-normal grow flex-col justify-center flex">
                         <div className="my-2">Create events</div>
@@ -26,7 +26,7 @@ const Home = () => {
                     </div>
                 </div>
                 <div
-                    className="col-span-2 md:col-span-1 rounded-2xl bg-surface text-center h-80 flex-col flex justify-evenly pb-4">
+                    className="col-span-2 md:col-span-1 rounded-2xl text-center h-80 flex-col flex justify-evenly pb-4 border shadow-2xl">
                     <h3 className="text-2xl font-bold pt-8">Voting</h3>
                     <div className="font-normal grow flex-col justify-center flex">
                         <div className="my-2">Ranked voting</div>

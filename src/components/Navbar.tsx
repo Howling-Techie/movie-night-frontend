@@ -9,7 +9,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     return (
-        <nav className="bg-appbar-background p-4 flex justify-between items-center">
+        <nav className="bg-gray-950 text-white p-4 flex justify-between items-center">
             <div className="text-xl font-bold">Materialize</div>
             <div className="flex space-x-4">
                 <Link to="/" className="hover:text-text-secondary">
@@ -18,7 +18,7 @@ const Navbar = () => {
                 <Link to="/about" className="hover:text-text-secondary">
                     Users
                 </Link>
-                <Link to="/about" className="hover:text-text-secondary">
+                <Link to="/movies" className="hover:text-text-secondary">
                     Movies
                 </Link>
                 <Link to="/about" className="hover:text-text-secondary">
