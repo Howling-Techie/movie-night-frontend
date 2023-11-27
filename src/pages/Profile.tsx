@@ -1,10 +1,23 @@
 import {useAuth} from '../context/AuthContext';
 import {useNavigate} from 'react-router-dom';
 import {Container} from "../components/Container.tsx";
+import {useEffect, useState} from "react";
+import {getServers} from "../services/API.ts";
+import {ServerCard} from "../components/ServerCard.tsx";
 
 const Profile = () => {
+    const [servers, setServers] = useState([]);
     const {user} = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const getUserServers = async (access_token: string) => {
+            const {servers} = await getServers(access_token);
+            setServers(servers);
+        }
+        if (user !== null)
+            getUserServers(user.tokens.access_token);
+    }, [user]);
 
     // Redirect to home if user is null
     if (user === null) {
@@ -13,7 +26,7 @@ const Profile = () => {
     return (
         <Container>
             {user && <div
-                className="bg-surface  w-full max-w-2xl text-white flex flex-col items-center rounded-2xl">
+                className="bg-surface w-full max-w-2xl text-white flex flex-col items-center rounded-2xl">
 
                 <div
                     className="bg-cover bg-center w-full h-60 rounded-t-2xl"
@@ -35,6 +48,13 @@ const Profile = () => {
                 </div>
             </div>
             }
+            {servers && <div className="my-8 w-full max-w-2xl">
+                <h2 className="text-2xl font-bold text-text-primary">Servers</h2>
+                <div className="grid grid-cols-2 gap-2">
+                    {servers.map((server) => {
+                        return (<ServerCard server={server}/>)
+                    })}</div>
+            </div>}
         </Container>
     );
 };
