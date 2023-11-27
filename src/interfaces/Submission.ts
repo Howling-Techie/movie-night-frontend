@@ -1,14 +1,14 @@
 import User from "./User.ts";
 
 export default interface Submission {
-    "submission_id": Number,
-    "user_id": String,
-    "server_id": String,
-    "tag_id": Number,
+    "submission_id": number,
+    "user_id": string,
+    "server_id": string,
+    "tag_id": number,
     "time_submitted": Date,
-    "title": String,
-    "description": String,
-    "status": String,
+    "title": string,
+    "description": string,
+    "status": string,
     "first_appearance": Date,
     "last_appearance": Date,
     "user": User

@@ -1,9 +1,9 @@
 export default interface User {
-    "user_id": String,
-    "username": String,
-    "display_name": String,
-    "avatar": String,
-    "banner": String,
-    "banner_color": String,
-    "description": String
+    "user_id": string,
+    "username": string,
+    "display_name": string,
+    "avatar": string,
+    "banner": string,
+    "banner_color": string,
+    "description": string
 }
