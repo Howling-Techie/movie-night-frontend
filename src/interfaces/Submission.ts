@@ -1,5 +1,6 @@
 import User from "./User.ts";
 import Movie from "./Movie.ts";
+import Server from "./Server.ts";
 
 export default interface Submission {
     "submission_id": number,
@@ -13,7 +14,8 @@ export default interface Submission {
     "first_appearance": Date,
     "last_appearance": Date,
     "user": User,
-    "movies": SubmissionMovie[]
+    "movies": SubmissionMovie[],
+    "server": Server
 }
 
 export interface SubmissionMovie {
