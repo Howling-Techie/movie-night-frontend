@@ -7,5 +7,6 @@ export default interface Movie {
     image: string | null,
     poster: string | null,
     imdb_id: string | null,
-    letterboxd_url: string | null
+    letterboxd_url: string | null,
+    genres: null | [{ "name": string, "icon": string }]
 }
