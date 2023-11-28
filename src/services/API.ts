@@ -70,12 +70,13 @@ export const getServerUsers = async (
 };
 
 // MOVIES
-export const getMovies = async (): Promise<{ movies: Movie[] }> => {
+export const getMovies = async (sort_by: string = "title", order: string = "asc"): Promise<{ movies: Movie[] }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
         method: 'get',
         url: `/movies`,
+        params: {sort_by, order},
         ...config,
     });
 };
