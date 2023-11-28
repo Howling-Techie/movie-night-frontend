@@ -8,6 +8,7 @@ import Profile from "./pages/Profile.tsx";
 import SignOut from "./pages/SignOut.tsx";
 import Movies from "./pages/Movies.tsx";
 import MoviePage from "./pages/Movie.tsx";
+import SubmissionPage from "./pages/Submission.tsx";
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/movies" element={<Movies/>}/>
                         <Route path="/movies/:movie_id" element={<MoviePage/>}/>
+                        <Route path="/submissions/:submission_id" element={<SubmissionPage/>}/>
                         <Route path="/about" element={<About/>}/>
                         <Route path="/signin" element={<SignIn/>}/>
                         <Route path="/signout" element={<SignOut/>}/>
