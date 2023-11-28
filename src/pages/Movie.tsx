@@ -2,7 +2,7 @@ import Movie from "../interfaces/Movie.ts";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {getMovie, getMovieSubmissions} from "../services/API.ts";
-import MovieSubmissionPreview from "../components/submissions/MovieSubmissionPreview.tsx";
+import MovieSubmissionPreview from "../components/movies/MovieSubmissionPreview.tsx";
 import Submission from "../interfaces/Submission.ts";
 
 const MoviePage = () => {
@@ -82,7 +82,7 @@ const MoviePage = () => {
             {submissions &&
                 <div className="flex justify-center pb-8">
                     <div className="flex-col flex w-full mt-8 max-w-7xl px-4">
-                        <div className="text-xl font-bold">Submission History</div>
+                        <div className="text-2xl font-semibold">Submission History</div>
                         {submissions.map((submission) => {
                             return <MovieSubmissionPreview submission={submission}/>
                         })}
