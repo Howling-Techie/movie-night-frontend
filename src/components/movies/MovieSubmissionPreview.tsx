@@ -40,9 +40,9 @@ const MovieSubmissionPreview = ({submission}: SubmissionProps) => {
             <div className="mt-4">
                 <h3 className="text-xl font-semibold">Submitted by:</h3>
                 <div className="flex items-center py-2">
-                    <img
+                    {user.avatar && <img
                         src={"https://cdn.discordapp.com/avatars/" + user.user_id + "/" + user.avatar + (user.avatar.startsWith("a_") ? ".gif" : ".png")}
-                        alt={user.username} className="w-10 h-10 rounded-full mr-2"/>
+                        alt={user.username} className="w-10 h-10 rounded-full mr-2"/>}
                     <div>
                         <p className="text-gray-900">{user.username}</p>
                     </div>
