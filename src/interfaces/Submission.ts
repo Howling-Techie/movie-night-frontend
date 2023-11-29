@@ -10,6 +10,7 @@ export default interface Submission {
     "time_submitted": Date,
     "title": string,
     "description": string,
+    "rating": number,
     "status": string,
     "first_appearance": Date,
     "last_appearance": Date,
