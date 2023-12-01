@@ -12,8 +12,8 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
         description,
         time_created,
         start_time,
-        voting_open_time,
-        voting_close_time,
+        voting_opening_time,
+        voting_closing_time,
         server,
         tag,
     } = event;
@@ -34,11 +34,11 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
                 </p>
                 <p>
                     <span className="font-semibold">Voting Open Time:</span>{' '}
-                    {voting_open_time ? new Date(voting_open_time).toLocaleString() : 'N/A'}
+                    {voting_opening_time ? new Date(voting_opening_time).toLocaleString() : 'N/A'}
                 </p>
                 <p>
                     <span className="font-semibold">Voting Close Time:</span>{' '}
-                    {voting_close_time ? new Date(voting_close_time).toLocaleString() : 'N/A'}
+                    {voting_closing_time ? new Date(voting_closing_time).toLocaleString() : 'N/A'}
                 </p>
             </div>
             <div className="mt-2">
