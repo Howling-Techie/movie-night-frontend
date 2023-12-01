@@ -152,3 +152,47 @@ export const getMovieSubmissions = async (movieId: number): Promise<{ submission
     });
 };
 
+// EVENTS
+export const getEvents = async (): Promise<{ events: Event[] }> => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events`,
+        ...config,
+    });
+};
+export const getEvent = async (eventId: number): Promise<{ event: Event }> => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events/${eventId}`,
+        ...config,
+    });
+};
+export const getEventEntries = async (eventId: number): Promise<{
+    entries: { entry_id: number, score: number, status: number, submission: Submission }[]
+}> => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events/${eventId}/entries`,
+        ...config,
+    });
+};
+export const getEventVotes = async (eventId: number): Promise<{
+    votes: {
+        submission: Submission,
+        votes: { user: User, points: number }[]
+    }[]
+}> => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: 'get',
+        url: `/events/${eventId}/votes`,
+        ...config,
+    });
+};
