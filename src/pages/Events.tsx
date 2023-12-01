@@ -22,7 +22,7 @@ const Events = () => {
                 <h2 className="text-lg font-semibold mb-2">Upcoming Events</h2>
                 <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                     {events && events.filter(event =>
-                        ((event.voting_open_time && new Date(event.voting_open_time) > new Date()) || event.voting_open_time === null) &&
+                        ((event.voting_opening_time && new Date(event.voting_opening_time) > new Date()) || event.voting_opening_time === null) &&
                         ((event.start_time && new Date(event.start_time) > new Date()) || event.start_time === null))
                         .map((event => {
                             return <BrowsePreview key={event.event_id} event={event}/>
@@ -34,7 +34,7 @@ const Events = () => {
                 <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                     {events && events.filter(event =>
                         (event.start_time && new Date(event.start_time) < new Date()) &&
-                        (event.voting_open_time && event.voting_open_time > new Date())).map((event => {
+                        (event.voting_opening_time && event.voting_opening_time > new Date())).map((event => {
                         return <BrowsePreview key={event.event_id} event={event}/>
                     }))}
                 </div>
