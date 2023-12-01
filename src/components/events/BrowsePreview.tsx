@@ -1,5 +1,4 @@
 import Event from "../../interfaces/Event.ts";
-import {useNavigate} from "react-router-dom";
 
 interface EventPreviewProps {
     event: Event;
@@ -17,11 +16,10 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
         server,
         tag,
     } = event;
-    const navigate = useNavigate();
 
     return (
-        <div className="bg-white p-4 shadow-md rounded-md border hover:cursor-pointer"
-             onClick={() => navigate(`/events/${event_id}`)}>
+        <a className="bg-white p-4 shadow-md rounded-md border"
+           href={`/events/${event_id}`}>
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <p className="text-gray-500">{new Date(time_created).toLocaleDateString()}</p>
@@ -61,7 +59,7 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
                     </div>
                 </div>
             )}
-        </div>
+        </a>
     );
 };
 

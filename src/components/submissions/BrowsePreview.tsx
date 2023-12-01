@@ -1,5 +1,4 @@
 import Submission from "../../interfaces/Submission.ts";
-import {useNavigate} from "react-router-dom";
 import {ReactElement} from "react";
 
 interface SubmissionProp {
@@ -7,7 +6,6 @@ interface SubmissionProp {
 }
 
 const BrowsePreview = ({submission}: SubmissionProp) => {
-    const navigate = useNavigate();
     const posters: string[] = [];
     const images: string[] = [];
     for (const movie of submission.movies) {
@@ -37,9 +35,10 @@ const BrowsePreview = ({submission}: SubmissionProp) => {
         }
     }
     return (
-        <div
+        <a
             className="flex flex-col lg:flex-row m-4 lg:h-80 lg:max-h-80 rounded-2xl overflow-hidden border shadow-2xl hover:cursor-pointer"
-            onClick={() => navigate(`/submissions/${submission.submission_id}`)}>
+            href={`/submissions/${submission.submission_id}`}
+        >
             {posters.length > 0 && <img
                 className="object-cover hidden lg:inline"
                 src={`https://image.tmdb.org/t/p/w500${posters[0]}`}
@@ -119,7 +118,7 @@ const BrowsePreview = ({submission}: SubmissionProp) => {
                     )
                 })}
             </div>
-        </div>
+        </a>
     );
 };
 
