@@ -48,11 +48,11 @@ const MoviePage = () => {
                 {movie &&
                     <div
                         className="flex flex-row bg-opacity-70 bg-white p-0 pr-8 shadow-md rounded-md border overflow-clip">
-                        <div className="flex grow max-w-[192px]">
+                        <div className="hidden md:flex md:w-1/5">
                             <img src={`https://image.tmdb.org/t/p/w500${movie.poster}`} alt={movie.title}
                                  className="object-cover"/>
                         </div>
-                        <div className="flex flex-col ml-4">
+                        <div className="flex w-full md:w-4/5 flex-col ml-4">
                             <div className="mt-4">
                                 <h2 className="text-2xl font-semibold">{movie.title}</h2>
                                 <p className="text-gray-600">
@@ -61,7 +61,7 @@ const MoviePage = () => {
                                 <p className="text-gray-600">Duration: {formattedDuration(movie.duration)}</p>
                                 <p className="mt-2">{movie.description || 'No description available.'}</p>
                             </div>
-                            <div className="mt-4 flex space-x-4">
+                            <div className="my-4 flex space-x-4">
                                 <a
                                     href={`https://www.themoviedb.org/movie/${movie.movie_id}`}
                                     target="_blank"
