@@ -1,11 +1,12 @@
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {ReactElement, useEffect, useState} from "react";
 import Submission from "../interfaces/Submission.ts";
 import Event from "../interfaces/Event.ts";
 import {getSubmission, getSubmissionEvents} from "../services/API.ts";
 import SubmissionEventPreview from "../components/submissions/SubmissionEventPreview.tsx";
 import SubmissionMoviePreview from "../components/submissions/SubmissionMoviePreview.tsx";
 import Server from "../interfaces/Server.ts";
+import {Container} from "../components/Container.tsx";
 
 const SubmissionPage = () => {
     const {submission_id} = useParams();
@@ -13,6 +14,7 @@ const SubmissionPage = () => {
     const [events, setEvents] = useState<null | Event[]>(null);
     const [eventServers, setEventServers] = useState<null | Server[]>(null);
     const [banners, setBanners] = useState<string[]>([]);
+    const [stars, setStars] = useState<ReactElement[]>([]);
 
     useEffect(() => {
         const getSubmissionById = async () => {
@@ -35,6 +37,25 @@ const SubmissionPage = () => {
                         bannerArray.push(`https://image.tmdb.org/t/p/original${submissionMovie.image ?? submissionMovie.movie_info.image}`)
                 }
                 setBanners(bannerArray);
+
+                const starArray: ReactElement[] = [];
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= submissionResult.rating) {
+                        starArray.push(<svg className="w-6 h-6 text-yellow-300 ms-1" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="#777200"
+                                            viewBox="0 0 22 20">
+                            <path
+                                d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                        </svg>)
+                    } else {
+                        starArray.push(<svg className="w-6 h-6 ms-1 text-gray-300 dark:text-gray-500" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                            <path
+                                d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                        </svg>)
+                    }
+                }
+                setStars(starArray);
             }
         }
         if (submission_id)
@@ -52,13 +73,16 @@ const SubmissionPage = () => {
             <div
                 className="absolute -z-10 w-full h-[768px] bg-gradient-to-b from-gray-800 to-white mix-blend-screen">
             </div>
-            <div className="px-8 mx-auto mt-8 max-w-7xl">
+            <Container>
                 {submission && <div className="bg-opacity-70 bg-white p-8 shadow-md rounded-md border">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-semibold">{submission.title}</h2>
+                        <h1 className="text-4xl font-semibold">{submission.title}</h1>
                         <p className="text-black">{new Date(submission.time_submitted).toLocaleDateString()}</p>
                     </div>
-                    <p className="text-black">{submission.description}</p>
+                    <p className="text-black mt-2">{submission.description}</p>
+                    <div className="flex items-center mt-4">
+                        {stars}
+                    </div>
                     <div className="mt-4">
                         <p>
                             <span className="font-semibold">Status:</span> {submission.status}
@@ -78,11 +102,11 @@ const SubmissionPage = () => {
                             <div className="bg-gray-100 shadow-md rounded-md border p-4 mt-4 flex items-center">
                                 {submission.user.avatar && <img
                                     src={"https://cdn.discordapp.com/avatars/" + submission.user.user_id + "/" + submission.user.avatar + (submission.user.avatar.startsWith("a_") ? ".gif" : ".png")}
-                                    alt={submission.user.username}
+                                    alt={submission.user.display_name}
                                     className="w-10 h-10 rounded-full mr-2"/>}
                                 <div>
-                                    <p className="text-lg font-medium">{submission.user.username}</p>
-                                    <p className="text-gray-500">{submission.user.description}</p>
+                                    <p className="text-lg font-medium">{submission.user.display_name}</p>
+                                    <p className="text-gray-500 text-sm">@{submission.user.username}</p>
                                 </div>
                             </div>
                         </div>
@@ -125,7 +149,7 @@ const SubmissionPage = () => {
                             })}
                         </div>
                     </div>}
-            </div>
+            </Container>
         </div>
     );
 };

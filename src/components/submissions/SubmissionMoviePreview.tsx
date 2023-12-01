@@ -1,15 +1,18 @@
 import {SubmissionMovie} from "../../interfaces/Submission.ts";
+import {useNavigate} from "react-router-dom";
 
 interface MovieProp {
     movie: SubmissionMovie
 }
 
 const SubmissionMoviePreview = ({movie}: MovieProp) => {
+    const navigate = useNavigate();
     const {movie_info} = movie;
     const poster = `https://image.tmdb.org/t/p/w500${movie.poster ?? movie_info.poster}`;
     const image = `https://image.tmdb.org/t/p/w500${movie.image ?? movie_info.image}`;
     return (
-        <div className="bg-gray-100 shadow-md rounded-md flex flex-col md:flex-row overflow-clip">
+        <div className="bg-gray-100 shadow-md rounded-md flex flex-col md:flex-row overflow-clip hover:cursor-pointer"
+             onClick={() => navigate(`/movies/${movie.movie_id}`)}>
             {poster &&
                 <img src={poster} alt={movie_info.title} className="w-48 object-cover hidden md:inline"/>}
             {image && <img src={image} alt={movie_info.title} className="h-48 object-cover inline md:hidden"/>}
