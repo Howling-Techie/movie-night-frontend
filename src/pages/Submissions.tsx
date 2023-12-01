@@ -215,7 +215,7 @@ const Submissions = () => {
                     </Listbox>
                 </div>
             </div>
-            <div className="flex-row flex-wrap max-w-7xl justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                 {submissions && submissions.map((submission => {
                     return <BrowsePreview key={submission.submission_id} submission={submission}/>
                 }))}
