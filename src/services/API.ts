@@ -89,8 +89,18 @@ export const getMovie = async (movieId: number): Promise<{ movie: Movie }> => {
         ...config,
     });
 };
+
+export const searchMovie = async (movieSearch: string): Promise<{ movies: Movie[] }> => {
+    const config: AxiosRequestConfig = {};
+    return makeRequest({
+        method: 'get',
+        url: `/movies/search/?searchTerm=${movieSearch}`,
+        ...config,
+    });
+};
+
 // SUBMISSIONS
-export const getSubmissions = async (sort_by: string = "title", order: string = "asc", statuses: string[] | null, users: string[] | null)
+export const getSubmissions = async (sort_by: string = "time_submitted", order: string = "desc", statuses: string[] | null, users: string[] | null)
     : Promise<{ submissions: Submission[] }> => {
     const config: AxiosRequestConfig = {};
 
