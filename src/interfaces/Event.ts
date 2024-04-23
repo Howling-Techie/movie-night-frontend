@@ -1,7 +1,7 @@
 import Server from "./Server.ts";
 
 export default interface Event {
-    event_id: number,
+    id: number,
     title: string,
     description: string | null,
     time_created: Date,

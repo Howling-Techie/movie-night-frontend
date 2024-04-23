@@ -3,10 +3,10 @@ import Movie from "./Movie.ts";
 import Server from "./Server.ts";
 
 export default interface Submission {
-    "submission_id": number,
+    "id": number,
     "user_id": string,
     "server_id": string,
-    "tags": null | [{ "tag_id": number, "name": string, "description": string, "icon": string }]
+    "tags": null | [{ "id": number, "name": string, "description": string, "icon": string }]
     "time_submitted": Date,
     "title": string,
     "description": string,
