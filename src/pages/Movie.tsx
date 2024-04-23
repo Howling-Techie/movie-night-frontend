@@ -63,7 +63,7 @@ const MoviePage = () => {
                             </div>
                             <div className="my-4 flex space-x-4">
                                 <a
-                                    href={`https://www.themoviedb.org/movie/${movie.movie_id}`}
+                                    href={`https://www.themoviedb.org/movie/${movie.id}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="bg-blue-500 text-white px-4 py-2 rounded"
