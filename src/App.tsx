@@ -12,6 +12,7 @@ import SubmissionPage from "./pages/Submission.tsx";
 import Submissions from "./pages/Submissions.tsx";
 import Events from "./pages/Events.tsx";
 import EventPage from "./pages/Event.tsx";
+import NewSubmission from "./pages/NewSubmission.tsx";
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
                         <Route path="/movies" element={<Movies/>}/>
                         <Route path="/movies/:movie_id" element={<MoviePage/>}/>
                         <Route path="/submissions" element={<Submissions/>}/>
+                        <Route path="/submissions/new" element={<NewSubmission/>}/>
                         <Route path="/submissions/:submission_id" element={<SubmissionPage/>}/>
                         <Route path="/events" element={<Events/>}/>
                         <Route path="/events/:event_id" element={<EventPage/>}/>
