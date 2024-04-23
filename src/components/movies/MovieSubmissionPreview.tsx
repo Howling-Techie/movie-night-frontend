@@ -7,7 +7,7 @@ interface SubmissionProps {
 
 const MovieSubmissionPreview = ({submission}: SubmissionProps) => {
     const {
-        submission_id,
+        id,
         time_submitted,
         title,
         description,
@@ -41,7 +41,7 @@ const MovieSubmissionPreview = ({submission}: SubmissionProps) => {
                 <h3 className="text-xl font-semibold">Submitted by:</h3>
                 <div className="flex items-center py-2">
                     {user.avatar && <img
-                        src={"https://cdn.discordapp.com/avatars/" + user.user_id + "/" + user.avatar + (user.avatar.startsWith("a_") ? ".gif" : ".png")}
+                        src={"https://cdn.discordapp.com/avatars/" + user.id + "/" + user.avatar + (user.avatar.startsWith("a_") ? ".gif" : ".png")}
                         alt={user.username} className="w-10 h-10 rounded-full mr-2"/>}
                     <div>
                         <p className="text-gray-900">{user.username}</p>
@@ -49,7 +49,7 @@ const MovieSubmissionPreview = ({submission}: SubmissionProps) => {
                 </div>
             </div>
             <div className="my-2">
-                <Link to={`/submissions/${submission_id}`} className="bg-blue-500 text-white px-4 py-2 rounded">
+                <Link to={`/submissions/${id}`} className="bg-blue-500 text-white px-4 py-2 rounded">
                     View Submission
                 </Link>
             </div>

@@ -1,5 +1,5 @@
 export default interface Movie {
-    movie_id: number,
+    id: number,
     title: string,
     release_date: Date,
     duration: number,

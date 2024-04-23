@@ -1,5 +1,5 @@
 export default interface User {
-    "user_id": string,
+    "id": string,
     "username": string,
     "display_name": string,
     "avatar": string | null,

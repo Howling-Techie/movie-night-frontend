@@ -5,7 +5,7 @@ interface SubmissionProp {
     submission: Submission
 }
 
-const BrowsePreview = ({submission}: SubmissionProp) => {
+const EventSubmissionPreview = ({submission}: SubmissionProp) => {
     const posters: string[] = [];
     const images: string[] = [];
     for (const movie of submission.movies) {
@@ -52,43 +52,6 @@ const BrowsePreview = ({submission}: SubmissionProp) => {
             <div className="p-2 w-full overflow-scroll">
                 <div className="flex flex-row justify-between">
                     <div className="font-bold text-xl flex-row">
-                        {submission.status === "Queued" &&
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor" className="w-6 h-6 pb-1 inline">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>}
-                        {submission.status === "Active" &&
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor" className="w-6 h-6 pb-1 inline">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"/>
-                            </svg>
-                        }
-                        {submission.status === "Victorious" &&
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor" className="w-6 h-6 pb-1 inline">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        }
-                        {submission.status === "Dead" &&
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor" className="w-6 h-6 pb-1 inline">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        }
-                        {submission.status === "Archived" &&
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                                 stroke="currentColor" className="w-6 h-6 pb-1 inline">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
-                            </svg>
-
-                        }
                         {submission.title}
                     </div>
                     <div className="text-gray-500">
@@ -122,4 +85,4 @@ const BrowsePreview = ({submission}: SubmissionProp) => {
     );
 };
 
-export default BrowsePreview
+export default EventSubmissionPreview

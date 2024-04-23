@@ -26,7 +26,7 @@ const SubmissionPage = () => {
                 const allServers = eventResults.map((event) => event.server);
                 const servers: Server[] = [];
                 for (let i = 0; i < allServers.length; i++) {
-                    if (!servers.some((server => server.server_id === allServers[i].server_id))) {
+                    if (!servers.some((server => server.id === allServers[i].id))) {
                         servers.push(allServers[i]);
                     }
                 }
@@ -101,7 +101,7 @@ const SubmissionPage = () => {
                             <h3 className="text-xl font-semibold">Submitted by:</h3>
                             <div className="bg-gray-100 shadow-md rounded-md border p-4 mt-4 flex items-center">
                                 {submission.user.avatar && <img
-                                    src={"https://cdn.discordapp.com/avatars/" + submission.user.user_id + "/" + submission.user.avatar + (submission.user.avatar.startsWith("a_") ? ".gif" : ".png")}
+                                    src={"https://cdn.discordapp.com/avatars/" + submission.user.id + "/" + submission.user.avatar + (submission.user.avatar.startsWith("a_") ? ".gif" : ".png")}
                                     alt={submission.user.display_name}
                                     className="w-10 h-10 rounded-full mr-2"/>}
                                 <div>
@@ -115,7 +115,7 @@ const SubmissionPage = () => {
                             <div className="bg-gray-100 shadow-md rounded-md border flex flex-col p-4 mt-4">
                                 <div className="flex flex-row items-center">
                                     {submission.server.avatar && <img
-                                        src={"https://cdn.discordapp.com/icons/" + submission.server.server_id + "/" + submission.server.avatar + (submission.server.avatar.startsWith("a_") ? ".gif" : ".png")}
+                                        src={"https://cdn.discordapp.com/icons/" + submission.server.id + "/" + submission.server.avatar + (submission.server.avatar.startsWith("a_") ? ".gif" : ".png")}
                                         alt={submission.server.server_name || 'Server'}
                                         className="w-10 h-10 rounded-full mr-2"/>}
                                     <h2 className="text-lg font-medium">{submission.server.server_name || 'N/A'}</h2>
@@ -133,7 +133,7 @@ const SubmissionPage = () => {
                         <h3 className="text-xl font-semibold">Tags:</h3>
                         <ul className="flex space-x-2">
                             {submission.tags.map((tag) => (
-                                <li key={tag.tag_id} className="text-gray-500">
+                                <li key={tag.id} className="text-gray-500">
                                     {tag.name}
                                 </li>
                             ))}

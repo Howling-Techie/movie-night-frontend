@@ -21,10 +21,11 @@ const Submissions = () => {
 
     useEffect(() => {
         const getSubmissionData = async () => {
-            const sortArray = selectedSort.id.split("--");
-            const {submissions} = await getSubmissions(sortArray[0], sortArray[1],
-                selectedStatuses && selectedStatuses.length > 0 ? selectedStatuses : null,
-                selectedUsers && selectedUsers.length > 0 ? selectedUsers.map(user => user.user_id) : null);
+            //const sortArray = selectedSort.id.split("--");
+            // const {submissions} = await getSubmissions(sortArray[0], sortArray[1],
+            //     selectedStatuses && selectedStatuses.length > 0 ? selectedStatuses : null,
+            //     selectedUsers && selectedUsers.length > 0 ? selectedUsers.map(user => user.user_id) : null);
+            const {submissions} = await getSubmissions();
             setSubmissions(submissions);
         }
         getSubmissionData();
@@ -32,13 +33,13 @@ const Submissions = () => {
 
     useEffect(() => {
         const getFilters = async () => {
-            const {statuses} = await getSubmissionStatuses();
-            const {users} = await getSubmissionUsers();
-            setAvailableStatuses(statuses);
-            setAvailableUsers(users);
+            // const {statuses} = await getSubmissionStatuses();
+            // const {users} = await getSubmissionUsers();
+            // setAvailableStatuses(statuses);
+            // setAvailableUsers(users);
         }
         getFilters();
-    }, [])
+    }, [submissions])
 
     return (
         <Container>
@@ -215,9 +216,9 @@ const Submissions = () => {
                     </Listbox>
                 </div>
             </div>
-            <div className="flex-row flex-wrap max-w-7xl justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                 {submissions && submissions.map((submission => {
-                    return <BrowsePreview key={submission.submission_id} submission={submission}/>
+                    return <BrowsePreview key={submission.id} submission={submission}/>
                 }))}
             </div>
         </Container>

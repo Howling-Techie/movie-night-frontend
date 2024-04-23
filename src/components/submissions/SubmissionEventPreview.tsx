@@ -7,7 +7,7 @@ interface EventProp {
 
 const SubmissionEventPreview = ({event}: EventProp) => {
     const {
-        event_id,
+        id,
         title,
         description,
         time_created,
@@ -24,7 +24,7 @@ const SubmissionEventPreview = ({event}: EventProp) => {
             </div>
             <p className="py-2">{description || 'No description available.'}</p>
             <div className="mt-2">
-                <Link to={`/events/${event_id}`} className="bg-blue-500 text-white px-4 py-2 rounded">
+                <Link to={`/events/${id}`} className="bg-blue-500 text-white px-4 py-2 rounded">
                     View Event
                 </Link>
             </div>
