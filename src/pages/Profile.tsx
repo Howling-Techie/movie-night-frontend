@@ -4,9 +4,10 @@ import {Container} from "../components/Container.tsx";
 import {useEffect, useState} from "react";
 import {getServers} from "../services/API.ts";
 import {ServerCard} from "../components/ServerCard.tsx";
+import Server from "../interfaces/Server.ts";
 
 const Profile = () => {
-    const [servers, setServers] = useState([]);
+    const [servers, setServers] = useState<Server[]>([]);
     const {user} = useAuth();
     const navigate = useNavigate();
 
