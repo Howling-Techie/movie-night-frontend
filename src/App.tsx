@@ -17,7 +17,7 @@ import NewSubmission from "./pages/NewSubmission.tsx";
 
 const App = () => {
     return (
-        <Router>
+        <Router basename={import.meta.env.VITE_HOMEPAGE_DIRECTORY}>
             <AuthProvider>
                 <div className="bg-background text-dark-text min-h-screen">
                     <Navbar/>

@@ -19,7 +19,7 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
 
     return (
         <a className="bg-white p-4 shadow-md rounded-md border"
-           href={`/events/${id}`}>
+           href={`events/${id}`}>
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <p className="text-gray-500">{new Date(time_created).toLocaleDateString()}</p>

@@ -5,7 +5,7 @@ import Movie from "../interfaces/Movie.ts";
 import User from "../interfaces/User.ts";
 import Server from "../interfaces/Server.ts";
 
-const baseURL = "http://localhost:5000/api";
+const baseURL =import.meta.env.VITE_API_URL + "/api";
 
 const axiosInstance = axios.create({
     baseURL,
@@ -42,7 +42,7 @@ export const getServer = async (serverId: number, accessToken?: string) => {
         ...config,
     });
 };
-export const getServers = async (accessToken?: string): Promise<{ severs: Server[] }> => {
+export const getServers = async (accessToken?: string): Promise<{ servers: Server[] }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
         : {};

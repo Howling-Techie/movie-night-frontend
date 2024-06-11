@@ -46,7 +46,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     }, []);
     const login = () => {
         // Redirect logic to Discord OAuth URL
-        window.location.href = `https://discord.com/oauth2/authorize?prompt=consent&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth%2Fdiscord%2Fcallback&scope=identify%20email%20guilds&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
+        window.location.href = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=https%3A%2F%2Fwww.hechie.com%2Fmovies%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
     };
 
     const logout = () => {

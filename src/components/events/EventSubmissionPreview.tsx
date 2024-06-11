@@ -37,7 +37,7 @@ const EventSubmissionPreview = ({submission}: SubmissionProp) => {
     return (
         <a
             className="flex flex-col lg:flex-row m-4 lg:h-80 lg:max-h-80 rounded-2xl overflow-hidden border shadow-2xl hover:cursor-pointer"
-            href={`/submissions/${submission.id}`}
+            href={`../submissions/${submission.id}`}
         >
             {posters.length > 0 && <img
                 className="object-cover hidden lg:inline"
