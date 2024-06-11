@@ -46,7 +46,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     }, []);
     const login = () => {
         // Redirect logic to Discord OAuth URL
-        window.location.href = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=https%3A%2F%2Fwww.hechie.com%2Fmovies%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
+        window.location.href = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=${import.meta.env.VITE_BASE_URL}%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
     };
 
     const logout = () => {
@@ -64,7 +64,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                 if (code) {
                     // Make a request to your backend to exchange the code for an access token
                     try {
-                        const response = await fetch('http://localhost:5000/api/auth/signin', {
+                        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/signin`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
