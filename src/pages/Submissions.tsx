@@ -46,7 +46,7 @@ const Submissions = () => {
             <div className="max-w-7xl w-full flex justify-between flex-col items-center md:items-start md:flex-row">
                 <div className="flex-grow flex-row flex"><h1
                     className="text-2xl font-semibold">Submissions</h1> <a
-                    href="/submissions/new"
+                    href="submissions/new"
                     className="rounded-md text-white bg-blue-400 hover:bg-blue-500 px-4 py-2 text-center mx-2 font-semibold">SUBMIT</a>
                 </div>
                 <div className="top-16 w-72">

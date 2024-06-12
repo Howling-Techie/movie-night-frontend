@@ -169,7 +169,7 @@ const NewSubmission = () => {
         if (server && user) {
             console.log(`submitting movie for ${JSON.stringify(user.tokens)}`);
             postMovieSubmission(server.id, title, description, rating, tag, movies, user.tokens.access_token).then((data) => {
-                navigate(`/submissions/${data.submission.id}`);
+                navigate(`submissions/${data.submission.id}`);
             });
         }
     };
