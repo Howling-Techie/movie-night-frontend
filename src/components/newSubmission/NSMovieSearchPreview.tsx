@@ -22,7 +22,7 @@ const SubmissionMoviePreview = ({movie, selectMovie}: MovieProp) => {
                 </div>
             </div>
             <button
-                onClick={() => selectMovie(movie.tmdb_id)}
+                onClick={() => selectMovie(movie.id)}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded-md w-full transition"
             >Add Movie
             </button>

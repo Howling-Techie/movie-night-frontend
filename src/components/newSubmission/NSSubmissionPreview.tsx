@@ -117,7 +117,7 @@ const NSSubmissionPreview = ({movies, title, rating, description, name, full}: S
                 </div>
                 {movies.map(movie => {
                     return (
-                        <div key={movie.tmdb_id}>
+                        <div key={movie.id}>
                             {movie.title} <span
                             className="text-gray-500">({new Date(movie.release_date).getFullYear()})</span>
                         </div>

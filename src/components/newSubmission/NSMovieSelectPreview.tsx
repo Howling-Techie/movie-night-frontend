@@ -14,7 +14,7 @@ export const NSMovieSelectPreview = ({movie, removeMovie, moveMovieUp, moveMovie
             <div
                 className="flex flex-col flex-grow max-h-[460px] overflow-clip">
                 <button
-                    onClick={() => removeMovie(movie.tmdb_id)}
+                    onClick={() => removeMovie(movie.id)}
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 w-full transition"
                 >Remove Movie
                 </button>
@@ -29,12 +29,12 @@ export const NSMovieSelectPreview = ({movie, removeMovie, moveMovieUp, moveMovie
             </div>
             <div className="flex flex-row justify-evenly">
                 <button
-                    onClick={() => moveMovieUp(movie.tmdb_id)}
+                    onClick={() => moveMovieUp(movie.id)}
                     className="bg-green-500 hover:bg-green-700 outline outline-1 outline-green-700 text-white font-semibold py-2 w-full transition"
                 >Move Up
                 </button>
                 <button
-                    onClick={() => moveMovieDown(movie.tmdb_id)}
+                    onClick={() => moveMovieDown(movie.id)}
                     className="bg-green-500 hover:bg-green-700 outline outline-1 outline-green-700 text-white font-semibold py-2 w-full transition"
                 >Move Down
                 </button>

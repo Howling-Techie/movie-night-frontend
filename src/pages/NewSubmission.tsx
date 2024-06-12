@@ -179,9 +179,10 @@ const NewSubmission = () => {
                                 <div
                                     className="flex-row flex-wrap grid grid-cols-2 md:grid-cols-4 gap-2">
                                     {movies.map((m) => {
-                                        return (<NSMovieSelectPreview movie={m} removeMovie={handleMovieRemove}
-                                                                      moveMovieUp={handleMoveMovieUp}
-                                                                      moveMovieDown={handleMoveMovieDown}/>);
+                                        return (
+                                            <NSMovieSelectPreview key={m.id} movie={m} removeMovie={handleMovieRemove}
+                                                                  moveMovieUp={handleMoveMovieUp}
+                                                                  moveMovieDown={handleMoveMovieDown}/>);
                                     })
                                     }
                                 </div>
@@ -214,7 +215,8 @@ const NewSubmission = () => {
                                 <div
                                     className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-3 gap-2 py-2">
                                     {movieResults.map((m) => {
-                                        return (<NSMovieSearchPreview movie={m} selectMovie={handleMovieSelect}/>);
+                                        return (<NSMovieSearchPreview key={m.id} movie={m}
+                                                                      selectMovie={handleMovieSelect}/>);
                                     })
                                     }
                                 </div>
