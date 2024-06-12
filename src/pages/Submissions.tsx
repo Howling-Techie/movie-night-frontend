@@ -13,7 +13,7 @@ const sorts = [
     {id: "time_submitted--desc", name: "Time Submitted (Descending)"}];
 const Submissions = () => {
     const [submissions, setSubmissions] = useState<null | Submission[]>(null);
-    const [selectedSort, setSelectedSort] = useState(sorts[0])
+    const [selectedSort, setSelectedSort] = useState(sorts[0]);
     const [availableStatuses, setAvailableStatuses] = useState<string[]>([]);
     const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
     const [availableUsers, setAvailableUsers] = useState<{ user_id: string, username: string }[]>([]);
@@ -27,7 +27,7 @@ const Submissions = () => {
             //     selectedUsers && selectedUsers.length > 0 ? selectedUsers.map(user => user.user_id) : null);
             const {submissions} = await getSubmissions();
             setSubmissions(submissions);
-        }
+        };
         getSubmissionData();
     }, [selectedSort, selectedStatuses, selectedUsers]);
 
@@ -37,14 +37,18 @@ const Submissions = () => {
             // const {users} = await getSubmissionUsers();
             // setAvailableStatuses(statuses);
             // setAvailableUsers(users);
-        }
+        };
         getFilters();
-    }, [submissions])
+    }, [submissions]);
 
     return (
         <Container>
             <div className="max-w-7xl w-full flex justify-between flex-col items-center md:items-start md:flex-row">
-                <h1 className="text-2xl font-semibold flex-grow">Submissions</h1>
+                <div className="flex-grow flex-row flex"><h1
+                    className="text-2xl font-semibold">Submissions</h1> <a
+                    href="/submissions/new"
+                    className="rounded-md text-white bg-blue-400 hover:bg-blue-500 px-4 py-2 text-center mx-2 font-semibold">SUBMIT</a>
+                </div>
                 <div className="top-16 w-72">
                     <Listbox value={selectedStatuses} onChange={setSelectedStatuses} multiple>
                         <div className="relative mt-1">
@@ -73,7 +77,7 @@ const Submissions = () => {
                                             key={statusIdx}
                                             className={({active}) =>
                                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                    active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                    active ? "bg-blue-100 text-blue-900" : "text-gray-900"
                                                 }`
                                             }
                                             value={status}
@@ -82,7 +86,7 @@ const Submissions = () => {
                                                 <>
                       <span
                           className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
+                              selected ? "font-medium" : "font-normal"
                           }`}
                       >
                         {status}
@@ -130,7 +134,7 @@ const Submissions = () => {
                                             key={userIdx}
                                             className={({active}) =>
                                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                    active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                    active ? "bg-blue-100 text-blue-900" : "text-gray-900"
                                                 }`
                                             }
                                             value={user}
@@ -139,7 +143,7 @@ const Submissions = () => {
                                                 <>
                       <span
                           className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
+                              selected ? "font-medium" : "font-normal"
                           }`}
                       >
                         {user.username}
@@ -186,7 +190,7 @@ const Submissions = () => {
                                             key={sortIdx}
                                             className={({active}) =>
                                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                    active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                    active ? "bg-blue-100 text-blue-900" : "text-gray-900"
                                                 }`
                                             }
                                             value={sort}
@@ -195,7 +199,7 @@ const Submissions = () => {
                                                 <>
                       <span
                           className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
+                              selected ? "font-medium" : "font-normal"
                           }`}
                       >
                         {sort.name}
@@ -218,7 +222,7 @@ const Submissions = () => {
             </div>
             <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                 {submissions && submissions.map((submission => {
-                    return <BrowsePreview key={submission.id} submission={submission}/>
+                    return <BrowsePreview key={submission.id} submission={submission}/>;
                 }))}
             </div>
         </Container>
