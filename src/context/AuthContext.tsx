@@ -57,8 +57,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     useEffect(() => {
         const handleDiscordCallback = async () => {
             // Check if the current route is the Discord callback route
-            if (location.pathname === "/auth/discord/callback") {
-                console.log("Handling token return");
+            if (location.pathname === import.meta.env.VITE_HOMEPAGE_DIRECTORY + "auth/discord/callback") {
                 const searchParams = new URLSearchParams(location.search);
                 const code = searchParams.get("code");
                 navigate("/");
