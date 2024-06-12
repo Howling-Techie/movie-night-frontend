@@ -34,8 +34,12 @@ const NewSubmission = () => {
     const [title, setTitle] = useState<string>("");
     const [rating, setRating] = useState<number>(0);
     const [tags, setTags] = useState<{ id: number, name: string, description: string, icon: string }[]>([]);
-    const [tag, setTag] = useState<number>(0);
+    const [tag, setTag] = useState<number>(1);
     const [images, setImages] = useState<{ movieId: number, posters: string[], images: string[] }[]>([]);
+    const [imagesToLoad, setImagesToLoad] = useState<number[]>([]);
+    const [maxImagesToLoad, setMaxImagesToLoad] = useState<number[]>([]);
+    const [postersToLoad, setPostersToLoad] = useState<number[]>([]);
+    const [maxPostersToLoad, setMaxPostersToLoad] = useState<number[]>([]);
 
     useEffect(() => {
         if (user) {
@@ -96,14 +100,19 @@ const NewSubmission = () => {
     const handleMovieSelectionConfirmation = async () => {
         if (movies.length > 0) {
             // Get images
+            const initialImagesToLoad: number[][] = [];
             const movieImages = await Promise.all(
                 movies.map(async (m) => {
                     const result = await getMovieImagesById(m.id);
+                    initialImagesToLoad.push([5, 5, result.images.images.length, result.images.posters.length]);
                     return {movieId: m.id, images: result.images.images, posters: result.images.posters};
                 })
             );
             setImages(movieImages);
-
+            setImagesToLoad(initialImagesToLoad.map(a => a[0]));
+            setPostersToLoad(initialImagesToLoad.map(a => a[1]));
+            setMaxImagesToLoad(initialImagesToLoad.map(a => a[2]));
+            setMaxPostersToLoad(initialImagesToLoad.map(a => a[3]));
             setStage(3);
         }
     };
@@ -137,6 +146,20 @@ const NewSubmission = () => {
             });
         });
     };
+    const handleLoadMoreImages = (index: number) => {
+        setImagesToLoad(prevState => {
+            const newState = [...prevState];
+            newState[index] = Math.min(newState[index] + 5, maxImagesToLoad[index]);
+            return newState;
+        });
+    };
+    const handleLoadMorePosters = (index: number) => {
+        setPostersToLoad(prevState => {
+            const newState = [...prevState];
+            newState[index] = Math.min(newState[index] + 5, maxPostersToLoad[index]);
+            return newState;
+        });
+    };
 
     const handleSubmissionSubmit = () => {
         if (title.length < 1) {
@@ -146,8 +169,6 @@ const NewSubmission = () => {
         if (server && user) {
             console.log(`submitting movie for ${JSON.stringify(user.tokens)}`);
             postMovieSubmission(server.id, title, description, rating, tag, movies, user.tokens.access_token).then((data) => {
-                console.log(data.submission);
-                console.log("Redirecting");
                 navigate(`/submissions/${data.submission.id}`);
             });
         }
@@ -290,15 +311,29 @@ const NewSubmission = () => {
                             </select>
                         </div>
 
-                        {movies.map((movie) => (
+                        {movies.map((movie, mIndex) => (
                             <div key={movie.id} className="mb-4">
                                 <h3 className="text-lg font-bold mb-2">{movie.title}</h3>
 
-                                <label className="block text-gray-700 font-bold mb-2">Select Poster</label>
+                                <div className="flex flex-row justify-between items-center">
+                                    <label className="block text-gray-700 font-bold mb-2">Select Poster</label>
+                                    {postersToLoad[mIndex] < maxPostersToLoad[mIndex] &&
+                                        <button
+                                            className="bg-blue-500 text-white px-4 py-2 mb-2 rounded-md hover:bg-blue-600 disabled:bg-gray-200 disabled:text-gray-800"
+                                            onClick={() => {
+                                                handleLoadMorePosters(mIndex);
+                                            }}
+                                            disabled={postersToLoad[mIndex] === maxPostersToLoad[mIndex]}>Load
+                                            More</button>
+                                    }
+                                </div>
                                 <div className="flex space-x-2 mb-4 overflow-scroll">
                                     {images.filter(i => i.movieId === movie.id)[0].posters
-                                        .map((poster, index) => (
-                                            <img
+                                        .map((poster, index) => {
+                                            if (index >= postersToLoad[mIndex]) {
+                                                return;
+                                            }
+                                            return (<img
                                                 key={index}
                                                 src={`https://image.tmdb.org/t/p/w500${poster}`}
                                                 alt={`Poster ${index + 1}`}
@@ -306,15 +341,27 @@ const NewSubmission = () => {
                                                     movie.poster === poster ? "border-2 border-blue-500" : "border"
                                                 }`}
                                                 onClick={() => handlePosterChange(movie.id, poster)}
-                                            />
-                                        ))}
+                                            />);
+                                        })}
                                 </div>
 
-                                <label className="block text-gray-700 font-bold mb-2">Select Image</label>
+                                <div className="flex flex-row justify-between items-center">
+                                    <label className="block text-gray-700 font-bold mb-2">Select Image</label>
+                                    <button
+                                        className="bg-blue-500 text-white px-4 py-2 mb-2 rounded-md hover:bg-blue-600 disabled:bg-gray-200 disabled:text-gray-800"
+                                        onClick={() => {
+                                            handleLoadMoreImages(mIndex);
+                                        }}
+                                        disabled={imagesToLoad[mIndex] === maxImagesToLoad[mIndex]}>Load More
+                                    </button>
+                                </div>
                                 <div className="flex space-x-2 overflow-scroll">
                                     {images.filter(i => i.movieId === movie.id)[0].images
-                                        .map((image, index) => (
-                                            <img
+                                        .map((image, index) => {
+                                            if (index >= imagesToLoad[mIndex]) {
+                                                return;
+                                            }
+                                            return (<img
                                                 key={index}
                                                 src={`https://image.tmdb.org/t/p/w500${image}`}
                                                 alt={`Image ${index + 1}`}
@@ -322,8 +369,8 @@ const NewSubmission = () => {
                                                     movie.image === image ? "border-2 border-blue-500" : "border"
                                                 }`}
                                                 onClick={() => handleImageChange(movie.id, image)}
-                                            />
-                                        ))}
+                                            />);
+                                        })}
                                 </div>
                             </div>
                         ))}
