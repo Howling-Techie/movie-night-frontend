@@ -57,11 +57,11 @@ const NSSubmissionPreview = ({movies, title, rating, description, name, full}: S
                     slidesPerView={1}
                     navigation={true}
                     modules={[Autoplay, Pagination, Navigation]}
-                    className={`${full ? "max-w-[220px]" : "hidden"}`}
+                    className={`${full ? "w-[350px]" : "hidden"}`}
                 >
                     {posters.map(p => {
                         return (<SwiperSlide><img
-                            className={`max-h-80 object-cover max-w-[220px]`}
+                            className={`h-80 object-cover w-full`}
                             src={`https://image.tmdb.org/t/p/w500${p}`}
                             alt={title}
                         /></SwiperSlide>);
@@ -80,7 +80,7 @@ const NSSubmissionPreview = ({movies, title, rating, description, name, full}: S
                     slidesPerView={1}
                     navigation={true}
                     modules={[Autoplay, Pagination, Navigation]}
-                    className={`${full ? "hidden" : "max-w-full"}`}
+                    className={`${full ? "hidden" : "w-full"}`}
                 >
                     {images.map(i => {
                         return (<SwiperSlide>
