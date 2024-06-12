@@ -1,11 +1,11 @@
-import axios, {AxiosRequestConfig} from 'axios';
+import axios, {AxiosRequestConfig} from "axios";
 import Submission from "../interfaces/Submission.ts";
 import Event from "../interfaces/Event.ts";
 import Movie from "../interfaces/Movie.ts";
 import User from "../interfaces/User.ts";
 import Server from "../interfaces/Server.ts";
 
-const baseURL =import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const axiosInstance = axios.create({
     baseURL,
@@ -31,13 +31,13 @@ const makeRequest = async (config: AxiosRequestConfig) => {
 };
 
 // SERVERS
-export const getServer = async (serverId: number, accessToken?: string) => {
+export const getServer = async (serverId: string, accessToken?: string): Promise<{ server: Server }> => {
     const config: AxiosRequestConfig = accessToken
         ? setAccessToken(accessToken)
         : {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/servers/${serverId}`,
         ...config,
     });
@@ -48,8 +48,26 @@ export const getServers = async (accessToken?: string): Promise<{ servers: Serve
         : {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/servers`,
+        ...config,
+    });
+};
+export const getServerTags = async (serverId: string, accessToken?: string): Promise<{
+    tags: {
+        id: number,
+        name: string,
+        description: string,
+        icon: string
+    }[]
+}> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: "get",
+        url: `/servers/${serverId}/tags`,
         ...config,
     });
 };
@@ -63,7 +81,7 @@ export const getServerUsers = async (
         : {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/servers/${serverId}/users`,
         ...config,
     });
@@ -74,7 +92,7 @@ export const getMovies = async (sort_by: string = "title", order: string = "asc"
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/movies`,
         params: {sort_by, order},
         ...config,
@@ -84,8 +102,19 @@ export const getMovie = async (movieId: number): Promise<{ movie: Movie }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/movies/${movieId}`,
+        ...config,
+    });
+};
+export const getMovieImagesById = async (movieId: number): Promise<{
+    images: { posters: string[], images: string[] }
+}> => {
+    const config: AxiosRequestConfig = {};
+
+    return makeRequest({
+        method: "get",
+        url: `/movies/images/${movieId}`,
         ...config,
     });
 };
@@ -93,7 +122,7 @@ export const getMovie = async (movieId: number): Promise<{ movie: Movie }> => {
 export const searchMovie = async (movieSearch: string): Promise<{ movies: Movie[] }> => {
     const config: AxiosRequestConfig = {};
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/movies/search/?searchTerm=${movieSearch}`,
         ...config,
     });
@@ -105,7 +134,7 @@ export const getSubmissions = async (sort_by: string = "time_submitted", order: 
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/submissions`,
         params: {sort_by, order, statuses, users},
         ...config,
@@ -117,7 +146,7 @@ export const getSubmissionStatuses = async ()
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/submissions/statuses`,
         ...config,
     });
@@ -128,7 +157,7 @@ export const getSubmissionUsers = async ()
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/submissions/users`,
         ...config,
     });
@@ -138,26 +167,42 @@ export const getSubmission = async (submissionId: number): Promise<{ submission:
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/submissions/${submissionId}`,
         ...config,
     });
 };
+
 export const getSubmissionEvents = async (submissionId: number): Promise<{ events: Event[] }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/submissions/${submissionId}/events`,
         ...config,
     });
 };
+
 export const getMovieSubmissions = async (movieId: number): Promise<{ submissions: Submission[] }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/movies/${movieId}/submissions`,
+        ...config,
+    });
+};
+
+export const postMovieSubmission = async (server_id: string, title: string, description: string, rating: number, tag_id: number, movies: Movie[],
+                                          accessToken: string): Promise<{ submission: Submission }> => {
+    const config: AxiosRequestConfig = accessToken
+        ? setAccessToken(accessToken)
+        : {};
+
+    return makeRequest({
+        method: "post",
+        url: `/submissions`,
+        data: {server_id, title, description, rating, tag_id, movies},
         ...config,
     });
 };
@@ -167,7 +212,7 @@ export const getEvents = async (): Promise<{ events: Event[] }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/events`,
         ...config,
     });
@@ -176,7 +221,7 @@ export const getEvent = async (eventId: number): Promise<{ event: Event }> => {
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/events/${eventId}`,
         ...config,
     });
@@ -187,7 +232,7 @@ export const getEventEntries = async (eventId: number): Promise<{
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/events/${eventId}/entries`,
         ...config,
     });
@@ -201,7 +246,7 @@ export const getEventVotes = async (eventId: number): Promise<{
     const config: AxiosRequestConfig = {};
 
     return makeRequest({
-        method: 'get',
+        method: "get",
         url: `/events/${eventId}/votes`,
         ...config,
     });

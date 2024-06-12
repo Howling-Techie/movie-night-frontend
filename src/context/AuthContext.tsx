@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {createContext, useContext, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 interface User {
     user_id: string,
@@ -36,11 +36,11 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                 try {
                     setUser(JSON.parse(userString));
                 } catch (error) {
-                    console.error('Error parsing user from local storage:', error);
+                    console.error("Error parsing user from local storage:", error);
                     return null;
                 }
             }
-        }
+        };
         if (user === null)
             checkTokenStorage();
     }, []);
@@ -57,17 +57,17 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     useEffect(() => {
         const handleDiscordCallback = async () => {
             // Check if the current route is the Discord callback route
-            if (location.pathname === '/auth/discord/callback') {
+            if (location.pathname === "/auth/discord/callback") {
                 const searchParams = new URLSearchParams(location.search);
-                const code = searchParams.get('code');
+                const code = searchParams.get("code");
                 navigate("/");
                 if (code) {
                     // Make a request to your backend to exchange the code for an access token
                     try {
-                        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/signin`, {
-                            method: 'POST',
+                        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
+                            method: "POST",
                             headers: {
-                                'Content-Type': 'application/json',
+                                "Content-Type": "application/json",
                             },
                             body: JSON.stringify({code}),
                         });
@@ -78,10 +78,10 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                             localStorage.setItem("user_info", JSON.stringify(data));
                             setUser(data);
                         } else {
-                            console.error('Token exchange failed');
+                            console.error("Token exchange failed");
                         }
                     } catch (error) {
-                        console.error('Error during token exchange:', error);
+                        console.error("Error during token exchange:", error);
                     }
                 }
             }
@@ -92,27 +92,28 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
     useEffect(() => {
         // If the auth token has expired, fetch a new one
-        console.log("checking token")
+        console.log("checking token");
         const checkTokenExpiration = async () => {
             if (user && user.expiration.auth < Date.now()) {
                 if (user.expiration.refresh > Date.now()) {
                     try {
-                        const response = await fetch('http://localhost:5000/api/auth/refresh', {
-                            method: 'POST',
+                        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/refresh`, {
+                            method: "POST",
                             headers: {
-                                'Content-Type': 'application/json',
+                                "Content-Type": "application/json",
                             },
                             body: JSON.stringify({refresh_token: user.tokens.refresh_token}),
                         });
 
                         if (response.ok) {
                             const refreshedUser = await response.json();
+                            console.log(`Applied updated user: ${JSON.stringify(refreshedUser)}`);
                             setUser(refreshedUser);
                         } else {
                             logout();
                         }
                     } catch (error) {
-                        console.error('Error refreshing token:', error);
+                        console.error("Error refreshing token:", error);
                         logout();
                     }
                 } else {
@@ -130,7 +131,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
 };
