@@ -1,57 +1,72 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-
-interface User {
-    user_id: string,
-    username: string,
-    display_name: string,
-    avatar: string,
-    banner: string | null,
-    banner_color: string,
-    tokens: {
-        access_token: string,
-        refresh_token: string
-    }
-    expiration: { auth: Date, refresh: Date }
-}
+import User from "../interfaces/User.ts";
 
 interface AuthContextProps {
-    user: null | User;
-    login: () => void;
-    logout: () => void;
+    user: undefined | User,
+    loaded: boolean,
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+    login: () => void,
+    logout: () => void,
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider = ({children}: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<any>(null);
+const AuthProvider = ({children}: { children: React.ReactNode }) => {
+    const [user, setUser] = useState<User | undefined>();
+    const [accessToken, setAccessToken] = useState<string | undefined>();
+    const [refreshToken, setRefreshToken] = useState<string | undefined>();
+    const [tokenExpiration, setTokenExpiration] = useState<{ auth: number, refresh: number } | undefined>();
+    const [loaded, setLoaded] = useState(false);
+
     const navigate = useNavigate();
 
 
     useEffect(() => {
         //See if any user data is in storage
-        const checkTokenStorage = async () => {
-            const userString = localStorage.getItem("user_info");
-            if (userString) {
-                try {
-                    setUser(JSON.parse(userString));
-                } catch (error) {
-                    console.error("Error parsing user from local storage:", error);
-                    return null;
-                }
-            }
-        };
-        if (user === null)
-            checkTokenStorage();
+        const userJson = localStorage.getItem("user");
+        const storedUser: User = userJson ? JSON.parse(userJson) : undefined;
+        const storedAccessToken = localStorage.getItem("accessToken");
+        const storedRefreshToken = localStorage.getItem("refreshToken");
+        const tokenExpirationJson = localStorage.getItem("tokenExpiration");
+        const storedTokenExpiration = tokenExpirationJson ? JSON.parse(tokenExpirationJson) : undefined;
+
+        if (storedUser && storedAccessToken && storedRefreshToken) {
+            setUser(storedUser);
+            setAccessToken(storedAccessToken);
+            setRefreshToken(storedRefreshToken);
+            setTokenExpiration(storedTokenExpiration);
+        }
+        setLoaded(true);
+
     }, []);
+
+    // Update stored tokens
+    useEffect(() => {
+        if (user && accessToken && refreshToken) {
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("tokenExpiration", JSON.stringify(tokenExpiration));
+        }
+    }, [user, accessToken, refreshToken, tokenExpiration]);
+
     const login = () => {
         // Redirect logic to Discord OAuth URL
         window.location.href = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=${import.meta.env.VITE_BASE_URL}%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
     };
 
     const logout = () => {
-        localStorage.removeItem("user_info");
-        setUser(null);
+        setUser(undefined);
+        setAccessToken(undefined);
+        setRefreshToken(undefined);
+        setTokenExpiration(undefined);
+
+        localStorage.removeItem("user");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("tokenExpiration");
     };
 
     useEffect(() => {
@@ -74,9 +89,10 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
                         if (response.ok) {
                             const data = await response.json();
-                            // Set the user object and save the data in local storage
-                            localStorage.setItem("user_info", JSON.stringify(data));
-                            setUser(data);
+                            setUser(data.user);
+                            setAccessToken(data.tokens.access_token);
+                            setRefreshToken(data.tokens.refresh_token);
+                            setTokenExpiration(data.expiration);
                         } else {
                             console.error("Token exchange failed");
                         }
@@ -88,51 +104,47 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
         };
 
         handleDiscordCallback();
-    }, [location.search]);
+    }, [navigate]);
 
     useEffect(() => {
         // If the auth token has expired, fetch a new one
-        console.log("checking token");
         const checkTokenExpiration = async () => {
-            if (user && user.expiration.auth < Date.now()) {
-                console.log("Token expired!");
-                if (user.expiration.refresh > Date.now()) {
-                    try {
-                        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({refresh_token: user.tokens.refresh_token}),
-                        });
+            if (user) {
+                if (tokenExpiration && tokenExpiration.auth < Date.now()) {
+                    if (tokenExpiration.refresh > Date.now()) {
+                        try {
+                            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({refreshToken}),
+                            });
 
-                        if (response.ok) {
-                            const refreshedUser = await response.json();
-                            console.log(`Applied updated user: ${JSON.stringify(refreshedUser)}`);
-                            setUser(refreshedUser);
-                        } else {
+                            if (response.ok) {
+                                const data = await response.json();
+                                setUser(data.user);
+                                setAccessToken(data.tokens.access_token);
+                                setRefreshToken(data.tokens.refresh_token);
+                                setTokenExpiration(data.expiration);
+                            } else {
+                                logout();
+                            }
+                        } catch (error) {
                             logout();
                         }
-                    } catch (error) {
-                        console.error("Error refreshing token:", error);
+                    } else {
                         logout();
                     }
-                } else {
-                    logout();
                 }
             }
         };
 
         checkTokenExpiration();
-    }, [location]);
+    }, [refreshToken, tokenExpiration, user]);
 
-    return <AuthContext.Provider value={{user, login, logout}}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider
+        value={{user, login, logout, loaded, accessToken, refreshToken}}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
+export {AuthContext, AuthProvider};

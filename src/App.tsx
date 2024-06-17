@@ -1,5 +1,5 @@
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {AuthProvider} from './context/AuthContext';
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {AuthProvider} from "./context/AuthContext";
 import Home from "./pages/Home.tsx";
 import About from "./pages/About.tsx";
 import Navbar from "./components/Navbar.tsx";
@@ -11,7 +11,7 @@ import MoviePage from "./pages/Movie.tsx";
 import SubmissionPage from "./pages/Submission.tsx";
 import Submissions from "./pages/Submissions.tsx";
 import Events from "./pages/Events.tsx";
-import EventPage from "./pages/Event.tsx";
+import EventPage from "./pages/EventPage.tsx";
 import NewSubmission from "./pages/NewSubmission.tsx";
 
 

@@ -1,16 +1,16 @@
-import {useEffect} from "react";
-import {useAuth} from "../context/AuthContext.tsx";
-import {useNavigate} from 'react-router-dom';
+import {useContext, useEffect} from "react";
+import {AuthContext} from "../context/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 const SignIn = () => {
-    const {user, login} = useAuth();
+    const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     useEffect(() => {
-        if (!user) {
-            login();
+        if (authContext && authContext.loaded && !authContext.user) {
+            authContext.login();
         }
         navigate("/");
-    }, [user]);
+    }, [authContext, navigate]);
     return (
         <>Logging in...</>
     );

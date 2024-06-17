@@ -1,5 +1,5 @@
 import Movie from "../interfaces/Movie.ts";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Container} from "../components/Container.tsx";
 import {
     getMovieImagesById,
@@ -8,7 +8,6 @@ import {
     postMovieSubmission,
     searchMovie
 } from "../services/API.ts";
-import {useAuth} from "../context/AuthContext.tsx";
 import Server from "../interfaces/Server.ts";
 import {NSServerPreview} from "../components/newSubmission/NSServerPreview.tsx";
 import NSMovieSearchPreview from "../components/newSubmission/NSMovieSearchPreview.tsx";
@@ -16,9 +15,10 @@ import {NSMovieSelectPreview} from "../components/newSubmission/NSMovieSelectPre
 import {FaStar} from "react-icons/fa";
 import NSSubmissionPreview from "../components/newSubmission/NSSubmissionPreview.tsx";
 import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../context/AuthContext.tsx";
 
 const NewSubmission = () => {
-    const {user} = useAuth();
+    const authContext = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [stage, setStage] = useState<number>(1);
@@ -34,7 +34,7 @@ const NewSubmission = () => {
     const [title, setTitle] = useState<string>("");
     const [rating, setRating] = useState<number>(0);
     const [tags, setTags] = useState<{ id: number, name: string, description: string, icon: string }[]>([]);
-    const [tag, setTag] = useState<number>(1);
+    const [tag, setTag] = useState<number | undefined>();
     const [images, setImages] = useState<{ movieId: number, posters: string[], images: string[] }[]>([]);
     const [imagesToLoad, setImagesToLoad] = useState<number[]>([]);
     const [maxImagesToLoad, setMaxImagesToLoad] = useState<number[]>([]);
@@ -42,12 +42,12 @@ const NewSubmission = () => {
     const [maxPostersToLoad, setMaxPostersToLoad] = useState<number[]>([]);
 
     useEffect(() => {
-        if (user) {
-            getServers(user.tokens.access_token).then(data => {
+        if (authContext && authContext.loaded) {
+            getServers(authContext.accessToken).then(data => {
                 setServers(data.servers);
             });
         }
-    }, [user]);
+    }, [authContext]);
 
     //STAGE 1
     const handleServerSelect = (serverId: string) => {
@@ -113,19 +113,19 @@ const NewSubmission = () => {
             setPostersToLoad(initialImagesToLoad.map(a => a[1]));
             setMaxImagesToLoad(initialImagesToLoad.map(a => a[2]));
             setMaxPostersToLoad(initialImagesToLoad.map(a => a[3]));
+            setTitle(movies.map(m => m.title).join("/"));
             setStage(3);
         }
     };
 
     //STAGE 3
     useEffect(() => {
-        if (server && user) {
-            getServerTags(server.id, user.tokens.access_token).then(data => {
-                console.log(data);
+        if (server && authContext && authContext.loaded) {
+            getServerTags(server.id, authContext.accessToken).then(data => {
                 setTags(data.tags);
             });
         }
-    }, [server, user]);
+    }, [authContext, server]);
     const handlePosterChange = (movieId: number, poster: string) => {
         setMovies(prevMovies => {
             return prevMovies.map(movie => {
@@ -166,10 +166,9 @@ const NewSubmission = () => {
             alert("Please enter a title");
             return;
         }
-        if (server && user) {
-            console.log(`submitting movie for ${JSON.stringify(user.tokens)}`);
-            postMovieSubmission(server.id, title, description, rating, tag, movies, user.tokens.access_token).then((data) => {
-                navigate(`submissions/${data.submission.id}`);
+        if (server && authContext && authContext.loaded && authContext.accessToken) {
+            postMovieSubmission(server.id, title, description, rating, tag, movies, authContext.accessToken).then((data) => {
+                navigate(`/submissions/${data.submission.id}`);
             });
         }
     };
@@ -245,7 +244,7 @@ const NewSubmission = () => {
                         </div>
                     </div>
                 }
-                {stage === 3 && movies && tags && user &&
+                {stage === 3 && movies && tags && authContext && authContext.user &&
                     <div className="flex flex-col space-y-2">
                         <h2 className="text-xl font-semibold">Enter Some Details</h2>
                         <div className="mb-4">
@@ -379,9 +378,9 @@ const NewSubmission = () => {
                         <div
                             className="flex-row flex-wrap justify-center grid grid-cols-1 lg:grid-cols-2 gap-2">
                             <NSSubmissionPreview movies={movies} title={title} rating={rating} description={description}
-                                                 name={user.display_name} full={true}/>
+                                                 name={authContext.user.display_name} full={true}/>
                             <NSSubmissionPreview movies={movies} title={title} rating={rating} description={description}
-                                                 name={user.display_name} full={false}/>
+                                                 name={authContext.user.display_name} full={false}/>
                         </div>
                         <button
                             className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -1,34 +1,34 @@
 import Movie from "../interfaces/Movie.ts";
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {getMovie, getMovieSubmissions} from "../services/API.ts";
 import MovieSubmissionPreview from "../components/movies/MovieSubmissionPreview.tsx";
 import Submission from "../interfaces/Submission.ts";
 import {Container} from "../components/Container.tsx";
+import {AuthContext} from "../context/AuthContext.tsx";
 
 const MoviePage = () => {
     const {movie_id} = useParams();
+    const authContext = useContext(AuthContext);
     const [movie, setMovie] = useState<null | Movie>(null);
     const [submissions, setSubmissions] = useState<null | Submission[]>(null);
 
     useEffect(() => {
-        const getMovieById = async () => {
-            if (movie_id) {
-                const {movie: movieResult} = await getMovie(+movie_id);
+        if (movie_id && authContext && authContext.loaded) {
+            getMovie(+movie_id).then(({movie: movieResult}) => {
                 setMovie(movieResult);
-                const {submissions: submissionResults} = await getMovieSubmissions(+movie_id);
+            });
+            getMovieSubmissions(+movie_id, authContext.accessToken).then(({submissions: submissionResults}) => {
                 setSubmissions(submissionResults);
-            }
+            });
         }
-        if (movie_id)
-            getMovieById()
-    }, [movie_id]);
+    }, [authContext, movie_id]);
 
     const formattedDuration = (duration: number) => {
         const hours = Math.floor(duration / 60);
         const minutes = duration % 60;
         return `${hours}h ${minutes}min`;
-    }
+    };
 
     return (
         <div
@@ -59,7 +59,7 @@ const MoviePage = () => {
                                     Release Date: {new Date(movie.release_date).toLocaleDateString()}
                                 </p>
                                 <p className="text-gray-600">Duration: {formattedDuration(movie.duration)}</p>
-                                <p className="mt-2">{movie.description || 'No description available.'}</p>
+                                <p className="mt-2">{movie.description || "No description available."}</p>
                             </div>
                             <div className="my-4 flex space-x-4">
                                 <a
@@ -99,7 +99,7 @@ const MoviePage = () => {
                         <div className="flex-col flex w-full px-4">
                             <h1 className="text-2xl font-semibold">Submission History</h1>
                             {submissions.map((submission) => {
-                                return <MovieSubmissionPreview submission={submission}/>
+                                return <MovieSubmissionPreview submission={submission}/>;
                             })}
                         </div>
                     </div>}
