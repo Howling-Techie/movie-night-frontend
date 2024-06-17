@@ -4,6 +4,7 @@ import Event from "../interfaces/Event.ts";
 import Movie from "../interfaces/Movie.ts";
 import User from "../interfaces/User.ts";
 import Server from "../interfaces/Server.ts";
+import Vote from "../interfaces/Vote.ts";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
@@ -248,6 +249,15 @@ export const getEventVotes = async (eventId: number): Promise<{
     return makeRequest({
         method: "get",
         url: `/events/${eventId}/votes`,
+        ...config,
+    });
+};
+
+export const getEventUserVote = async (eventId: number, userId: string): Promise<{ vote: Vote }> => {
+    const config: AxiosRequestConfig = {};
+    return makeRequest({
+        method: "get",
+        url: `/events/${eventId}/votes/${userId}`,
         ...config,
     });
 };
