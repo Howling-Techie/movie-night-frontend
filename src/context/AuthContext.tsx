@@ -118,7 +118,7 @@ const AuthProvider = ({children}: { children: React.ReactNode }) => {
                                 headers: {
                                     "Content-Type": "application/json",
                                 },
-                                body: JSON.stringify({refreshToken}),
+                                body: JSON.stringify({refresh_token: refreshToken}),
                             });
 
                             if (response.ok) {
