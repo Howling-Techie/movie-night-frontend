@@ -1,82 +1,103 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-
-interface User {
-    user_id: string,
-    username: string,
-    display_name: string,
-    avatar: string,
-    banner: string | null,
-    banner_color: string,
-    tokens: {
-        access_token: string,
-        refresh_token: string
-    }
-    expiration: { auth: Date, refresh: Date }
-}
+import User from "../interfaces/User.ts";
 
 interface AuthContextProps {
-    user: null | User;
-    login: () => void;
-    logout: () => void;
+    user: undefined | User,
+    loaded: boolean,
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+    login: () => void,
+    logout: () => void,
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider = ({children}: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<any>(null);
+// Constants for the OAuth URL and the headers required in the fetch calls
+const DISCORD_OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=${import.meta.env.VITE_BASE_URL}%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
+const POST_HEADERS = {
+    "Content-Type": "application/json",
+};
+
+interface stateInterface {
+    user: User | undefined,
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+    tokenExpiration: { auth: number, refresh: number } | undefined
+}
+
+const initialState: stateInterface = {
+    user: undefined,
+    accessToken: undefined,
+    refreshToken: undefined,
+    tokenExpiration: undefined,
+};
+
+const AuthProvider = ({children}: { children: React.ReactNode }) => {
+    const [state, setState] = useState(initialState);
+    const {user, accessToken, refreshToken, tokenExpiration} = state;
+    const [loaded, setLoaded] = useState(false);
     const navigate = useNavigate();
 
+    // function to reset the state and localStorage
+    const resetState = () => {
+        setState(initialState);
+        Object.keys(initialState).forEach(key => localStorage.removeItem(key));
+    };
 
+    // initialization useEffect
     useEffect(() => {
-        //See if any user data is in storage
-        const checkTokenStorage = async () => {
-            const userString = localStorage.getItem("user_info");
-            if (userString) {
-                try {
-                    setUser(JSON.parse(userString));
-                } catch (error) {
-                    console.error("Error parsing user from local storage:", error);
-                    return null;
+        const savedState = Object.keys(initialState)
+            .reduce((acc, key) => {
+                const item = localStorage.getItem(key);
+                if (item !== null) {
+                    try {
+                        // @ts-expect-error error catcher in place in case unexpected item is returned
+                        acc[key] = JSON.parse(item);
+                    } catch {
+                        resetState();
+                    }
                 }
-            }
-        };
-        if (user === null)
-            checkTokenStorage();
+                return acc;
+            }, {...initialState});
+        setState(savedState);
+        setLoaded(true);
     }, []);
-    const login = () => {
-        // Redirect logic to Discord OAuth URL
-        window.location.href = `https://discord.com/oauth2/authorize?client_id=1037090073222598736&response_type=code&redirect_uri=${import.meta.env.VITE_BASE_URL}%2Fauth%2Fdiscord%2Fcallback&scope=identify+guilds+email&client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}`;
-    };
 
-    const logout = () => {
-        localStorage.removeItem("user_info");
-        setUser(null);
-    };
-
+    // storage useEffect
     useEffect(() => {
-        const handleDiscordCallback = async () => {
-            // Check if the current route is the Discord callback route
+        if (user && accessToken && refreshToken) {
+            Object.entries(state)
+                .forEach(([key, value]) => localStorage.setItem(key, JSON.stringify(value)));
+        }
+    }, [state]);
+
+    const login = () => window.location.href = DISCORD_OAUTH_URL;
+
+    const logout = resetState;
+
+    // discord callback useEffect
+    useEffect(() => {
+        (async () => {
             if (location.pathname === import.meta.env.VITE_HOMEPAGE_DIRECTORY + "auth/discord/callback") {
                 const searchParams = new URLSearchParams(location.search);
                 const code = searchParams.get("code");
                 navigate("/");
                 if (code) {
-                    // Make a request to your backend to exchange the code for an access token
                     try {
                         const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
+                            headers: POST_HEADERS,
                             body: JSON.stringify({code}),
                         });
-
                         if (response.ok) {
                             const data = await response.json();
-                            // Set the user object and save the data in local storage
-                            localStorage.setItem("user_info", JSON.stringify(data));
-                            setUser(data);
+                            setState({
+                                user: data.user,
+                                accessToken: data.tokens.access_token,
+                                refreshToken: data.tokens.refresh_token,
+                                tokenExpiration: data.expiration,
+                            });
                         } else {
                             console.error("Token exchange failed");
                         }
@@ -85,54 +106,44 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
                     }
                 }
             }
-        };
+        })();
+    }, [navigate]);
 
-        handleDiscordCallback();
-    }, [location.search]);
-
+    // token expiration useEffect
     useEffect(() => {
-        // If the auth token has expired, fetch a new one
-        console.log("checking token");
-        const checkTokenExpiration = async () => {
-            if (user && user.expiration.auth < Date.now()) {
-                console.log("Token expired!");
-                if (user.expiration.refresh > Date.now()) {
-                    try {
-                        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({refresh_token: user.tokens.refresh_token}),
-                        });
-
-                        if (response.ok) {
-                            const refreshedUser = await response.json();
-                            console.log(`Applied updated user: ${JSON.stringify(refreshedUser)}`);
-                            setUser(refreshedUser);
-                        } else {
+        (async () => {
+            if (user && tokenExpiration) {
+                if (tokenExpiration.auth < Date.now()) {
+                    if (tokenExpiration.refresh > Date.now()) {
+                        try {
+                            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
+                                method: "POST",
+                                headers: POST_HEADERS,
+                                body: JSON.stringify({refresh_token: refreshToken}),
+                            });
+                            if (response.ok) {
+                                const data = await response.json();
+                                setState({
+                                    user: data.user,
+                                    accessToken: data.tokens.access_token,
+                                    refreshToken: data.tokens.refresh_token,
+                                    tokenExpiration: data.expiration,
+                                });
+                            } else {
+                                logout();
+                            }
+                        } catch (error) {
                             logout();
                         }
-                    } catch (error) {
-                        console.error("Error refreshing token:", error);
+                    } else {
                         logout();
                     }
-                } else {
-                    logout();
                 }
             }
-        };
+        })();
+    }, [state]);
 
-        checkTokenExpiration();
-    }, [location]);
-
-    return <AuthContext.Provider value={{user, login, logout}}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{...state, login, logout, loaded}}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
+export {AuthContext, AuthProvider};

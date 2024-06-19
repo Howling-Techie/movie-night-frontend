@@ -1,4 +1,5 @@
 import Event from "../../interfaces/Event.ts";
+import {Link} from "react-router-dom";
 
 interface EventPreviewProps {
     event: Event;
@@ -18,25 +19,25 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
     } = event;
 
     return (
-        <a className="bg-white p-4 shadow-md rounded-md border"
-           href={`events/${id}`}>
+        <Link className="bg-white p-4 shadow-md rounded-md border"
+              to={`/events/${id}`}>
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">{title}</h2>
                 <p className="text-gray-500">{new Date(time_created).toLocaleDateString()}</p>
             </div>
-            <p className="text-gray-600">{description || 'No description available.'}</p>
+            <p className="text-gray-600">{description || "No description available."}</p>
             <div className="mt-2">
                 <p>
-                    <span className="font-semibold">Start Time:</span>{' '}
-                    {start_time ? new Date(start_time).toLocaleString() : 'N/A'}
+                    <span className="font-semibold">Start Time:</span>{" "}
+                    {start_time ? new Date(start_time).toLocaleString() : "N/A"}
                 </p>
                 <p>
-                    <span className="font-semibold">Voting Open Time:</span>{' '}
-                    {voting_opening_time ? new Date(voting_opening_time).toLocaleString() : 'N/A'}
+                    <span className="font-semibold">Voting Open Time:</span>{" "}
+                    {voting_opening_time ? new Date(voting_opening_time).toLocaleString() : "N/A"}
                 </p>
                 <p>
-                    <span className="font-semibold">Voting Close Time:</span>{' '}
-                    {voting_closing_time ? new Date(voting_closing_time).toLocaleString() : 'N/A'}
+                    <span className="font-semibold">Voting Close Time:</span>{" "}
+                    {voting_closing_time ? new Date(voting_closing_time).toLocaleString() : "N/A"}
                 </p>
             </div>
             <div className="mt-2">
@@ -59,7 +60,7 @@ export const BrowsePreview = ({event}: EventPreviewProps) => {
                     </div>
                 </div>
             )}
-        </a>
+        </Link>
     );
 };
 

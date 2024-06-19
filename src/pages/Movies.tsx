@@ -13,15 +13,13 @@ const sorts = [
     {id: "release_date--desc", name: "Release Date (Descending)"}];
 const Movies = () => {
     const [movies, setMovies] = useState<null | Movie[]>(null);
-    const [selectedSort, setSelectedSort] = useState(sorts[0])
+    const [selectedSort, setSelectedSort] = useState(sorts[0]);
 
 
     useEffect(() => {
-        const getMovieData = async () => {
-            const {movies} = await getMovies(...selectedSort.id.split("--"));
+        getMovies(...selectedSort.id.split("--")).then(({movies}) => {
             setMovies(movies);
-        }
-        getMovieData();
+        });
     }, [selectedSort]);
     return (
         <Container>
@@ -53,7 +51,7 @@ const Movies = () => {
                                             key={sortIdx}
                                             className={({active}) =>
                                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                    active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'
+                                                    active ? "bg-blue-100 text-blue-900" : "text-gray-900"
                                                 }`
                                             }
                                             value={sort}
@@ -62,7 +60,7 @@ const Movies = () => {
                                                 <>
                       <span
                           className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
+                              selected ? "font-medium" : "font-normal"
                           }`}
                       >
                         {sort.name}
@@ -85,7 +83,7 @@ const Movies = () => {
             </div>
             <div className="flex flex-row flex-wrap max-w-7xl justify-center">
                 {movies && movies.map((movie => {
-                    return <BrowsePreview movie={movie}/>
+                    return <BrowsePreview movie={movie}/>;
                 }))}
             </div>
         </Container>

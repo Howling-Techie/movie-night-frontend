@@ -1,19 +1,21 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Event from "../interfaces/Event.ts";
 import {getEvents} from "../services/API.ts";
 import {Container} from "../components/Container.tsx";
 import BrowsePreview from "../components/events/BrowsePreview.tsx";
+import {AuthContext} from "../context/AuthContext.tsx";
 
 const Events = () => {
     const [events, setEvents] = useState<null | Event[]>(null);
+    const authContext = useContext(AuthContext);
 
     useEffect(() => {
-        const getEventData = async () => {
-            const {events: eventResults} = await getEvents();
-            setEvents(eventResults);
+        if (authContext && authContext.loaded) {
+            getEvents(authContext.accessToken).then(({events: eventResults}) => {
+                setEvents(eventResults);
+            });
         }
-        getEventData();
-    }, []);
+    }, [authContext]);
 
     return (
         <Container>
@@ -25,7 +27,7 @@ const Events = () => {
                         ((event.voting_opening_time && new Date(event.voting_opening_time) > new Date()) || event.voting_opening_time === null) &&
                         ((event.start_time && new Date(event.start_time) > new Date()) || event.start_time === null))
                         .map((event => {
-                            return <BrowsePreview key={event.id} event={event}/>
+                            return <BrowsePreview key={event.id} event={event}/>;
                         }))}
                 </div>
             </div>
@@ -35,7 +37,7 @@ const Events = () => {
                     {events && events.filter(event =>
                         (event.start_time && new Date(event.start_time) < new Date()) &&
                         (event.voting_opening_time && event.voting_opening_time > new Date())).map((event => {
-                        return <BrowsePreview key={event.id} event={event}/>
+                        return <BrowsePreview key={event.id} event={event}/>;
                     }))}
                 </div>
             </div>
@@ -43,7 +45,7 @@ const Events = () => {
                 <h2 className="text-lg font-semibold mb-2">Past Events</h2>
                 <div className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                     {events && events.filter(event => event.start_time && new Date(event.start_time) < new Date()).sort((a, b) => a.time_created < b.time_created ? 1 : -1).map((event => {
-                        return <BrowsePreview key={event.id} event={event}/>
+                        return <BrowsePreview key={event.id} event={event}/>;
                     }))}
                 </div>
             </div>

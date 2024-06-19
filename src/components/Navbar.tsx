@@ -1,11 +1,11 @@
-import {Link, useNavigate} from 'react-router-dom';
-import {useAuth} from '../context/AuthContext';
-import {Menu, Transition} from '@headlessui/react'
-import {ChevronDownIcon} from '@heroicons/react/20/solid'
-import {Fragment} from 'react'
+import {Link, useNavigate} from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
+import {Menu, Transition} from "@headlessui/react";
+import {ChevronDownIcon} from "@heroicons/react/20/solid";
+import {Fragment, useContext} from "react";
 
 const Navbar = () => {
-    const {user} = useAuth();
+    const authContext = useContext(AuthContext);
     const navigate = useNavigate();
 
     return (
@@ -35,11 +35,11 @@ const Navbar = () => {
                 </Link>
             </div>
             <div>
-                {user ? (<Menu as="div" className="relative inline-block text-left">
+                {authContext && authContext.user ? (<Menu as="div" className="relative inline-block text-left">
                         <div>
                             <Menu.Button
                                 className="inline-flex w-full justify-center rounded-md bg-surface px-4 py-2 text-sm font-medium text-primary-text hover:bg-background-grey focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-                                {user.display_name}
+                                {authContext.user.display_name}
                                 <ChevronDownIcon
                                     className="-mr-1 ml-2 h-5 w-5 text-primary"
                                     aria-hidden="true"
@@ -62,7 +62,7 @@ const Navbar = () => {
                                         {({active}) => (
                                             <button onClick={() => navigate("/profile")}
                                                     className={`${
-                                                        active ? 'bg-gray-400' : ''
+                                                        active ? "bg-gray-400" : ""
                                                     } group flex text-white w-full items-center rounded-md px-2 py-2 text-sm`}
                                             >Profile
                                             </button>
@@ -72,7 +72,7 @@ const Navbar = () => {
                                         {({active}) => (
                                             <button onClick={() => navigate("/signout")}
                                                     className={`${
-                                                        active ? 'bg-gray-400' : ''
+                                                        active ? "bg-gray-400" : ""
                                                     } group flex text-white w-full items-center rounded-md px-2 py-2 text-sm`}
                                             >
                                                 Sign Out

@@ -1,14 +1,16 @@
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Submission from "../interfaces/Submission.ts";
 import Event from "../interfaces/Event.ts";
 import {getEvent, getEventEntries, getEventVotes} from "../services/API.ts";
 import {Container} from "../components/Container.tsx";
-import {ResponsiveBar} from "@nivo/bar";
+import {BarDatum, ResponsiveBar} from "@nivo/bar";
 import EventSubmissionPreview from "../components/events/EventSubmissionPreview.tsx";
+import {AuthContext} from "../context/AuthContext.tsx";
 
 const EventPage = () => {
     const {event_id} = useParams();
+    const authContext = useContext(AuthContext);
     const [event, setEvent] = useState<null | Event>(null);
     const [entries, setEntries] = useState<null | {
         entry_id: number,
@@ -16,42 +18,43 @@ const EventPage = () => {
         status: number,
         submission: Submission
     }[]>(null);
-    // const [votes, setVotes] = useState<null | {
-    //     submission: Submission,
-    //     votes: { user: User, points: number }[]
-    // }[]>(null);
-    const [chartData, setChartData] = useState<{ data: {}[], users: string[] } | null>(null)
+    const [chartData, setChartData] = useState<{ data: BarDatum[], users: string[] } | null>(null);
 
     useEffect(() => {
-        const getEventById = async () => {
-            if (event_id) {
-                const {event: eventResult} = await getEvent(+event_id);
+        if (event_id && authContext && authContext.loaded) {
+            getEvent(+event_id, authContext.accessToken).then(({event: eventResult}) => {
                 setEvent(eventResult);
-                const {entries: entryResults} = await getEventEntries(+event_id);
-                setEntries(entryResults);
-                const {votes: voteResults} = await getEventVotes(+event_id);
-                //setVotes(voteResults);
 
-                // Construct chart data
-                const chartArray: { [k: string]: any }[] = [];
-                const usernames: string[] = [];
-                for (const voteResult of voteResults) {
-                    const chartRow: { [k: string]: any } = {};
-                    chartRow["submission"] = voteResult.submission.title
-                    for (const vote of voteResult.votes) {
-                        chartRow[vote.user.username] = vote.points;
-                        if (!usernames.includes(vote.user.username)) {
-                            usernames.push(vote.user.username)
+                getEventEntries(+event_id).then(({entries: entryResults}) => {
+                    setEntries(entryResults);
+
+                    getEventVotes(+event_id).then(({votes: voteResults}) => {
+                        // Construct chart data
+                        const chartArray: BarDatum[] = [];
+                        const usernames: string[] = [];
+
+                        for (const voteResult of voteResults) {
+                            const chartRow: BarDatum = {};
+                            chartRow["submission"] = voteResult.submission.title;
+
+                            for (const vote of voteResult.votes) {
+                                chartRow[vote.user.username] = vote.points;
+
+                                if (!usernames.includes(vote.user.username)) {
+                                    usernames.push(vote.user.username);
+                                }
+                            }
+
+                            chartArray.push(chartRow);
                         }
-                    }
-                    chartArray.push(chartRow);
-                }
-                setChartData({data: chartArray, users: usernames});
-            }
+
+                        setChartData({data: chartArray, users: usernames});
+                    });
+                });
+            });
         }
-        if (event_id)
-            getEventById()
-    }, [event_id]);
+    }, [authContext, event_id]);
+
     return (
         <Container>
             {event &&
@@ -134,15 +137,15 @@ const EventPage = () => {
                                         margin={{top: 0, right: 50, bottom: 80, left: 100}}
                                         padding={0.3}
                                         layout="horizontal"
-                                        valueScale={{type: 'linear'}}
-                                        indexScale={{type: 'band', round: true}}
-                                        colors={{scheme: 'nivo'}}
+                                        valueScale={{type: "linear"}}
+                                        indexScale={{type: "band", round: true}}
+                                        colors={{scheme: "nivo"}}
 
                                         borderColor={{
-                                            from: 'color',
+                                            from: "color",
                                             modifiers: [
                                                 [
-                                                    'darker',
+                                                    "darker",
                                                     1.6
                                                 ]
                                             ]
@@ -153,8 +156,8 @@ const EventPage = () => {
                                             tickSize: 5,
                                             tickPadding: 5,
                                             tickRotation: 0,
-                                            legend: 'points',
-                                            legendPosition: 'middle',
+                                            legend: "points",
+                                            legendPosition: "middle",
                                             legendOffset: 32,
                                             truncateTickAt: 0
                                         }}
@@ -168,10 +171,10 @@ const EventPage = () => {
                                         labelSkipWidth={12}
                                         labelSkipHeight={12}
                                         labelTextColor={{
-                                            from: 'color',
+                                            from: "color",
                                             modifiers: [
                                                 [
-                                                    'darker',
+                                                    "darker",
                                                     1.6
                                                 ]
                                             ]
@@ -210,7 +213,7 @@ const EventPage = () => {
                                     className="flex-row flex-wrap justify-center grid grid-cols-1 md:grid-cols-2 gap-2">
                                     {entries && entries.map((entry => {
                                         return <EventSubmissionPreview key={entry.entry_id}
-                                                                       submission={entry.submission}/>
+                                                                       submission={entry.submission}/>;
                                     }))}
                                 </div>
                             </div>
