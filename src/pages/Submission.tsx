@@ -89,9 +89,10 @@ const SubmissionPage = () => {
                         </p>}
                     </div>
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="">
+                        <div className="flex flex-col">
                             <h3 className="text-xl font-semibold">Submitted by:</h3>
-                            <div className="bg-gray-100 shadow-md rounded-md border p-4 mt-4 flex items-center">
+                            <div
+                                className="bg-gray-100 shadow-md rounded-md border p-4 mt-4 flex items-center  flex-grow">
                                 {submission.user.avatar && <img
                                     src={"https://cdn.discordapp.com/avatars/" + submission.user.id + "/" + submission.user.avatar + (submission.user.avatar.startsWith("a_") ? ".gif" : ".png")}
                                     alt={submission.user.display_name}
@@ -102,9 +103,9 @@ const SubmissionPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className="flex flex-col">
                             <h3 className="text-xl font-semibold">Server:</h3>
-                            <div className="bg-gray-100 shadow-md rounded-md border flex flex-col p-4 mt-4">
+                            <div className="bg-gray-100 shadow-md rounded-md border flex flex-col p-4 mt-4 flex-grow">
                                 <div className="flex flex-row items-center">
                                     {submission.server.avatar && <img
                                         src={"https://cdn.discordapp.com/icons/" + submission.server.id + "/" + submission.server.avatar + (submission.server.avatar.startsWith("a_") ? ".gif" : ".png")}
