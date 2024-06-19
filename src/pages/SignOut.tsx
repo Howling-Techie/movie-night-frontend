@@ -6,10 +6,12 @@ const SignOut = () => {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     useEffect(() => {
-        if (authContext && authContext.user) {
-            authContext.logout();
+        if (authContext && authContext.loaded) {
+            if (authContext.user) {
+                authContext.logout();
+            }
+            navigate("/");
         }
-        navigate("/");
     }, [authContext, navigate]);
     return (
         <>Logging out...</>
